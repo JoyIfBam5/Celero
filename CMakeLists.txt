@@ -261,3 +261,62 @@ if(CELERO_ENABLE_FOLDERS)
 endif()
 
 ADD_SUBDIRECTORY(experiments)
+
+#packaging
+find_package(Git)
+if(GIT_FOUND)
+    execute_process(COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE VERSION_STRING
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    if(VERSION_STRING)
+        set(CPACK_PACKAGE_VERSION ${VERSION_STRING})
+    else()
+        set(CPACK_PACKAGE_VERSION "v1.0.0")
+    endif()
+else()
+    set(CPACK_PACKAGE_VERSION "v1.0.0")
+endif()
+
+set(BUILD_NUM_FILE "${CMAKE_SOURCE_DIR}/build.num")
+set(VERSION_FILE "${CMAKE_SOURCE_DIR}/build.version")
+if (EXISTS ${BUILD_NUM_FILE})
+    file(READ ${BUILD_NUM_FILE} BUILD_NUM)
+else()
+    set(BUILD_NUM 1)
+endif()
+
+if (EXISTS ${VERSION_FILE})
+    file(READ ${VERSION_FILE} LAST_VERSION)
+else()
+    set(LAST_VERSION ${CPACK_PACKAGE_VERSION})
+    file(WRITE ${VERSION_FILE} ${LAST_VERSION})
+endif()
+
+if (${LAST_VERSION} STREQUAL ${CPACK_PACKAGE_VERSION})
+    math(EXPR BUILD_NUM ${BUILD_NUM}+1)
+else()
+    set(BUILD_NUM 1)
+    set(LAST_VERSION ${CPACK_PACKAGE_VERSION})
+    file(WRITE ${VERSION_FILE} ${LAST_VERSION})
+endif()
+file(WRITE ${BUILD_NUM_FILE} ${BUILD_NUM})
+
+message(STATUS "Build num = " ${BUILD_NUM})
+message(STATUS "Current Version = " ${CPACK_PACKAGE_VERSION})
+
+set(CPACK_GENERATOR "RPM")
+set(CPACK_PACKAGE_NAME "celero-static-devel")
+set(CPACK_PACKAGE_RELEASE ${BUILD_NUM})
+set(CPACK_PACKAGE_CONTACT "nasuni")
+set(CPACK_PACKAGE_VENDOR "nasuni")
+set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+set(CPACK_RPM_PACKAGE_RELEASE ${BUILD_NUM})
+set(CPACK_RPM_PACKAGE_SUMMARY "C++ Benchmark Authoring Library/Framework")
+set(CPACK_RPM_PACKAGE_LICENSE "Apache License Version 2.0")
+set(CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
+set(CPACK_RPM_PACKAGE_DESCRIPTION "Celero, aims to be a small library which can be added to a C++ project and perform benchmarks on code in a way which is easy to reproduce, share, and compare among individual runs, developers, or projects. Celero uses a framework similar to that of GoogleTest to make its API easier to use and integrate into a project. Make automated benchmarking as much a part of your development process as automated testing.")
+include(CPack)
+
