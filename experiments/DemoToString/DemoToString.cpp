@@ -1,7 +1,7 @@
 #include <celero/Celero.h>
 
 #include <cstdlib>
-#include <strstream>
+#include <sstream>
 
 ///
 /// This is the main(int argc, char** argv) for the entire celero program.
@@ -95,30 +95,30 @@ std::string hopmanFast(T o)
 
 BASELINE(DemoToString, Baseline, 10000, 1000)
 {
-	const int x = rand() % 42;
+	const int x = celero::Random() % 42;
 	celero::DoNotOptimizeAway(x);
 	celero::DoNotOptimizeAway(std::string("42"));
 }
 
 BENCHMARK(DemoToString, to_string, 10000, 1000)
 {
-	const int x = rand() % 42;
+	const int x = celero::Random() % 42;
 	celero::DoNotOptimizeAway(x);
 	celero::DoNotOptimizeAway(std::to_string(x));
 }
 
-BENCHMARK(DemoToString, strstream, 10000, 1000)
+BENCHMARK(DemoToString, stringstream, 10000, 1000)
 {
-	const int x = rand() % 42;
+	const int x = celero::Random() % 42;
 	celero::DoNotOptimizeAway(x);
-	std::strstream ss;
+	std::stringstream ss;
 	ss << x;
 	celero::DoNotOptimizeAway(ss.str());
 }
 
 BENCHMARK(DemoToString, table, 10000, 1000)
 {
-	const int x = rand() % 42;
+	const int x = celero::Random() % 42;
 	celero::DoNotOptimizeAway(x);
 	celero::DoNotOptimizeAway(uint8str[x]);
 }
@@ -137,7 +137,7 @@ BENCHMARK(DemoToString, itoa, 10000, 1000)
 /// http://ideone.com/GkPcy
 BENCHMARK(DemoToString, hopmanFast, 10000, 1000)
 {
-	const int x = rand() % 42;
+	const int x = celero::Random() % 42;
 	celero::DoNotOptimizeAway(x);
 	celero::DoNotOptimizeAway(std::string(hopmanFast(x)));
 }
