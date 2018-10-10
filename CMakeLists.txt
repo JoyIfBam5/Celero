@@ -297,7 +297,7 @@ if(CELERO_ENABLE_FOLDERS)
 	set_property(TARGET celero PROPERTY FOLDER "Celero")
 endif()
 
-add_subdirectory(experiments)
+# add_subdirectory(experiments)
 
 # ---------------------------------------------------------------------------
 # Packaging
@@ -359,4 +359,3 @@ set(CPACK_RPM_PACKAGE_LICENSE "Apache License Version 2.0")
 set(CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
 set(CPACK_RPM_PACKAGE_DESCRIPTION "Celero, aims to be a small library which can be added to a C++ project and perform benchmarks on code in a way which is easy to reproduce, share, and compare among individual runs, developers, or projects. Celero uses a framework similar to that of GoogleTest to make its API easier to use and integrate into a project. Make automated benchmarking as much a part of your development process as automated testing.")
 include(CPack)
-
